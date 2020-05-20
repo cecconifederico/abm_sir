@@ -264,10 +264,10 @@ NIL
 HORIZONTAL
 
 SLIDER
-14
-349
-186
-382
+17
+351
+189
+384
 density
 density
 0.1
