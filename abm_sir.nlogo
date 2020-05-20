@@ -1,8 +1,12 @@
-turtles-own [status]
-globals [N M]
+extensions [rnd csv]
+turtles-own [status alpha]
+globals [N M alpha_distribution alpha_variance]
+
+  __includes [ "alpha.nls" ]
 
 to setup
   clear-all
+  set-alpha
   set N (floor ((max-pxcor * 2 ) + 1) * ((max-pycor * 2 ) + 1) * density )
   set M (floor (N * M_perc))
   repeat N[
@@ -303,7 +307,6 @@ Per chiarezza, ribadisco che i punti 6-10 rappresentano un singolo passo element
 Ricapitolando: i parametri che l'utente può scegliere sono BETA, GAMMA, RHO (che essendo probabilità vanno da 0 a 1, io farei a passi di 0.05 o più piccoli); la topologia (mean field, 2D con 4 p.v., 2D con 8 p.v.) 
 
 anche il numero iniziale M di infetti è scelto dall'utente. N invece è fisso, io ne fare 100 o 200 (vedi tu, in generale più sono meglio è, chiaramente se troppi poi la dinamica è lenta).
-
 @#$#@#$#@
 default
 true
