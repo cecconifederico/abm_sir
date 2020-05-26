@@ -213,7 +213,7 @@ rho
 rho
 0
 1
-0.08
+0.0
 0.01
 1
 NIL
@@ -277,7 +277,7 @@ CHOOSER
 beta_distribution_schema
 beta_distribution_schema
 1 2 3 4 5 6
-0
+1
 
 PLOT
 710
