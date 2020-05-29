@@ -33,6 +33,15 @@ to setup
       set i i + 1
     ]
     ask turtle (N - 1) [create-link-with turtle 0]
+    ask turtles [
+      let targets other turtles with [ not (link-neighbor? myself)]
+      if any? targets [
+        ask n-of (int (network_density * (count targets))) targets [
+          create-link-with myself
+        ]
+      ]
+    ]
+
   ]
   draw_all
   reset-ticks
@@ -200,7 +209,7 @@ M_perc
 M_perc
 0
 1
-0.03
+0.01
 0.01
 1
 NIL
@@ -215,7 +224,7 @@ gamma
 gamma
 0
 1
-0.01
+0.05
 0.01
 1
 NIL
@@ -332,6 +341,32 @@ MONITOR
 367
 NIL
 M
+17
+1
+11
+
+SLIDER
+15
+474
+222
+507
+network_density
+network_density
+0
+0.01
+0.01
+0.001
+1
+NIL
+HORIZONTAL
+
+MONITOR
+16
+517
+221
+562
+Average degree
+mean [(count my-links)] of turtles
 17
 1
 11
