@@ -7,8 +7,8 @@ globals [N M beta_distribution beta_variance]
 to setup
   clear-all
   set-beta
-  set N (floor ((max-pxcor * 2 ) + 1) * ((max-pycor * 2 ) + 1) * density )
-  set M (floor (N * M_perc))
+  set N int (((max-pxcor * 2 ) + 1) * ((max-pycor * 2 ) + 1) * density )
+  set M int (N * M_perc)
   repeat N[
     ask one-of patches with[not any? turtles-here][
       sprout 1 [
@@ -25,6 +25,14 @@ to setup
     set beta random-normal (first rnd:weighted-one-of-list beta_distribution [ [p] -> last p ]) beta_variance
     set beta (max (list beta 0))
     set beta (min (list beta 1))
+  ]
+  if modality = "network"[
+    let i 0
+    repeat (N - 1)[
+      ask turtle i [create-link-with turtle (i + 1)]
+      set i i + 1
+    ]
+    ask turtle (N - 1) [create-link-with turtle 0]
   ]
   draw_all
   reset-ticks
@@ -55,6 +63,14 @@ to update_infected [status_to_test myprob]
         ]
         if modality = "8neigh"[
           let y turtles-on neighbors
+          if any? y[
+           let x one-of y
+           let prob sqrt (myprob * [beta] of x)
+           update status_to_test x prob
+          ]
+        ]
+        if modality = "network"[
+          let y link-neighbors
           if any? y[
            let x one-of y
            let prob sqrt (myprob * [beta] of x)
@@ -98,6 +114,7 @@ to draw_all
     if status = "S" [set color blue]
     if status = "R" [set color green]
   ]
+  if modality = "network" [layout-circle sort turtles 15]
 end
 
 to compute_stats
@@ -106,11 +123,11 @@ end
 GRAPHICS-WINDOW
 245
 12
-703
-471
+921
+689
 -1
 -1
-14.52
+21.55
 1
 10
 1
@@ -137,8 +154,8 @@ CHOOSER
 106
 modality
 modality
-"mean_field" "4neigh" "8neigh"
-0
+"mean_field" "4neigh" "8neigh" "network"
+3
 
 BUTTON
 13
@@ -183,7 +200,7 @@ M_perc
 M_perc
 0
 1
-0.15
+0.03
 0.01
 1
 NIL
@@ -198,7 +215,7 @@ gamma
 gamma
 0
 1
-0.09
+0.01
 0.01
 1
 NIL
@@ -220,10 +237,10 @@ NIL
 HORIZONTAL
 
 PLOT
-710
-11
-1301
-273
+928
+124
+1519
+386
 plot_status
 NIL
 NIL
@@ -255,15 +272,15 @@ NIL
 HORIZONTAL
 
 SLIDER
-14
-349
-186
-382
+15
+435
+222
+468
 density
 density
 0.1
 1
-0.9
+1.0
 0.01
 1
 NIL
@@ -277,13 +294,13 @@ CHOOSER
 beta_distribution_schema
 beta_distribution_schema
 1 2 3 4 5 6
-1
+0
 
 PLOT
-710
-284
-1300
-472
+929
+392
+1519
+580
 beta_distribution
 NIL
 NIL
@@ -296,6 +313,28 @@ false
 "" ""
 PENS
 "default" 0.001 1 -16777216 true "" "histogram [beta] of turtles"
+
+MONITOR
+83
+270
+190
+315
+NIL
+N
+17
+1
+11
+
+MONITOR
+84
+322
+188
+367
+NIL
+M
+17
+1
+11
 
 @#$#@#$#@
 ## WHAT IS IT?
