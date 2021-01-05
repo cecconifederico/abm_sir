@@ -26,7 +26,7 @@ to setup
     set beta (max (list beta 0))
     set beta (min (list beta 1))
   ]
-  if modality = "network"[
+  if modality = "network_small_world"[
     let i 0
     repeat (N - 1)[
       ask turtle i [create-link-with turtle (i + 1)]
@@ -36,7 +36,7 @@ to setup
     ask turtles [
       let targets other turtles with [ not (link-neighbor? myself)]
       if any? targets [
-        ask n-of (int (network_density * (count targets))) targets [
+        ask n-of (int (network_small_world_density * (count targets))) targets [
           create-link-with myself
         ]
       ]
@@ -123,7 +123,7 @@ to draw_all
     if status = "S" [set color blue]
     if status = "R" [set color green]
   ]
-  if modality = "network" [layout-circle sort turtles 15]
+  if modality = "network_small_world" [layout-circle sort turtles 15]
 end
 
 to compute_stats
@@ -163,8 +163,8 @@ CHOOSER
 106
 modality
 modality
-"mean_field" "4neigh" "8neigh" "network"
-3
+"mean_field" "4neigh" "8neigh" "network_small_world"
+0
 
 BUTTON
 13
@@ -209,7 +209,7 @@ M_perc
 M_perc
 0
 1
-0.01
+0.47
 0.01
 1
 NIL
@@ -239,7 +239,7 @@ rho
 rho
 0
 1
-0.0
+0.02
 0.01
 1
 NIL
@@ -289,7 +289,7 @@ density
 density
 0.1
 1
-1.0
+0.4
 0.01
 1
 NIL
@@ -348,10 +348,10 @@ M
 SLIDER
 15
 474
-222
+221
 507
-network_density
-network_density
+network_small_world_density
+network_small_world_density
 0
 0.01
 0.01
@@ -361,10 +361,10 @@ NIL
 HORIZONTAL
 
 MONITOR
-16
-517
-221
-562
+931
+12
+1136
+57
 Average degree
 mean [(count my-links)] of turtles
 17
@@ -375,27 +375,6 @@ mean [(count my-links)] of turtles
 ## WHAT IS IT?
 
 
-Per ora c'è un solo tipo di agenti.
-
-Ogni agente però può essere in uno di tre stati (nel corso della dinamica in generale ogni agente può cambiare più volte stato): S (susceptible), I (infected), R (recovered).
-
-Condizioni iniziali: nessun agente R, M < N agenti I, il resto susceptible.
-
-Dinamica: divisa in T_MAX unità temporali (giorni, mesi, quello che si vuole); ogni unità temporale è però composta da N passi elementari.
-
-Ad ogni passo elementare viene estratto un agente a caso, chiamiamolo k: se k è un S si estrae un suo vicino (cioè un qualsiasi altro agente se siamo in mean field, uno dei suoi 4 o 8 primi vicini negli altri due), e se questo vicino è un I (infected), con probabilità BETA (vedi punto 7) k diventa I pure lui.
-
-BETA per il momento è un parametro fisso del modello, ma quando raffineremo il modello sarà variabile, nel tempo e da agente ad agente (in che modo vedremo). 
-
-Se l'agente k  è un I, si fanno due cose: a) si estrae un suo vicino (analogamente al punto 5), se tale vicino è un S, con probabilità BETA anche questo vicino diventa I, b) quindi con probabilità GAMMA l'agente k diventa R.
-
-Se infine l'agente k è un R, con probabilità RHO diventa S.
-
-Per chiarezza, ribadisco che i punti 6-10 rappresentano un singolo passo elementare, N passi elementari compongono un'unità temporale, l'intera simulazione dura T_MAX unità temporali.
-
-Ricapitolando: i parametri che l'utente può scegliere sono BETA, GAMMA, RHO (che essendo probabilità vanno da 0 a 1, io farei a passi di 0.05 o più piccoli); la topologia (mean field, 2D con 4 p.v., 2D con 8 p.v.) 
-
-anche il numero iniziale M di infetti è scelto dall'utente. N invece è fisso, io ne fare 100 o 200 (vedi tu, in generale più sono meglio è, chiaramente se troppi poi la dinamica è lenta).
 @#$#@#$#@
 default
 true
